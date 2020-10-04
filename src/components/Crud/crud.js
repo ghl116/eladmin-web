@@ -169,6 +169,7 @@ function CRUD(options) {
      * @param {*} data 数据项
      */
     toEdit(data) {
+      // console.log('crud',data)
       crud.resetForm(JSON.parse(JSON.stringify(data)))
       if (!(callVmHook(crud, CRUD.HOOK.beforeToEdit, crud.form) && callVmHook(crud, CRUD.HOOK.beforeToCU, crud.form))) {
         return
@@ -406,6 +407,10 @@ function CRUD(options) {
           Vue.set(crudFrom, key, form[key])
         }
       }
+      // add by ghl 2020-10-04  客户管理页面重复添加客户时，客户类别的校验会存在
+      if (crud.findVM('form').$refs['form']) {
+        crud.findVM('form').$refs['form'].clearValidate()
+      }
     },
     /**
      * 重置数据状态
@@ -527,10 +532,14 @@ function CRUD(options) {
     }
   }
   const crud = Object.assign({}, data)
+
   // 可观测化
   Vue.observable(crud)
+
   // 附加方法
   Object.assign(crud, methods)
+  // 测试时发现，确实是这个crud对象
+  Object.assign(crud, { ghltest: 'ghltest' })
   // 记录初始默认的查询参数，后续重置查询时使用
   Object.assign(crud, {
     defaultQuery: JSON.parse(JSON.stringify(data.query)),
@@ -670,8 +679,10 @@ function presenter(crud) {
       parseTime
     },
     created() {
+      // console.log('presenter created crud.toQuery')
       for (const k in this.$crud) {
         if (this.$crud[k].queryOnPresenterCreated) {
+          console.warn(this.$crud[k])
           this.$crud[k].toQuery()
         }
       }
@@ -757,6 +768,12 @@ function form(defaultForm) {
   }
 }
 
+// function ghltest() {
+//   const ghltest = { count: 0 }
+//   Vue.observable(ghltest)
+//   return ghltest
+// }
+
 /**
  * crud
  */
@@ -767,7 +784,9 @@ function crud(options = {}) {
   options = mergeOptions(defaultOptions, options)
   return {
     data() {
+      // console.log('function crud',this.ghltest,this.crud,this)
       return {
+
         crud: this.crud
       }
     },

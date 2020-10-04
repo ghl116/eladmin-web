@@ -12,11 +12,13 @@ export const constantRouterMap = [
   },
   {
     path: '/404',
+    meta: { title: '404', noCache: true },
     component: (resolve) => require(['@/views/features/404'], resolve),
     hidden: true
   },
   {
     path: '/401',
+    meta: { title: '401', noCache: true },
     component: (resolve) => require(['@/views/features/401'], resolve),
     hidden: true
   },

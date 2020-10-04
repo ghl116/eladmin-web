@@ -42,6 +42,9 @@ service.interceptors.response.use(
     }
   },
   error => {
+    console.log('error.response', error.response)
+    console.log('error code: ', error.response.status)
+    console.log('error text: ', error.response.statusText)
     let code = 0
     try {
       code = error.response.data.status
@@ -55,13 +58,13 @@ service.interceptors.response.use(
       }
     }
     if (code) {
-      if (code === 401) {
+      if (code === 401) { // 未授权，注销重新登录
         store.dispatch('LogOut').then(() => {
           // 用户登录界面提示
           Cookies.set('point', 401)
           location.reload()
         })
-      } else if (code === 403) {
+      } else if (code === 403) { // 1. HTTP 403 Forbidden - 拒绝访问
         router.push({ path: '/401' })
       } else {
         const errorMsg = error.response.data.message

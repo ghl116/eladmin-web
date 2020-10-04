@@ -73,6 +73,7 @@ export default {
   watch: {
     $route: {
       handler: function(route) {
+        console.log('login watch router:', 'route.query', route.query, 'route.query.redirect', route.query.redirect)
         this.redirect = route.query && route.query.redirect
       },
       immediate: true
@@ -131,6 +132,7 @@ export default {
             Cookies.remove('rememberMe')
           }
           this.$store.dispatch('Login', user).then(() => {
+            console.log('login success')
             this.loading = false
             this.$router.push({ path: this.redirect || '/' })
           }).catch(() => {
@@ -153,6 +155,13 @@ export default {
           duration: 5000
         })
         Cookies.remove('point')
+      } else {
+        this.$notify({
+          title: '提示',
+          message: 'ghl-test' + Cookies.get('point'),
+          type: 'warning',
+          duration: 5000
+        })
       }
     }
   }

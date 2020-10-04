@@ -12,7 +12,9 @@ NProgress.configure({ showSpinner: false })// NProgress Configuration
 const whiteList = ['/login']// no redirect whitelist
 
 router.beforeEach((to, from, next) => {
+  console.log('router.beforeEach')
   if (to.meta.title) {
+    console.log('router index.js ', to.meta.title, Config.title)
     document.title = to.meta.title + ' - ' + Config.title
   }
   NProgress.start()
@@ -52,6 +54,7 @@ router.beforeEach((to, from, next) => {
 })
 
 export const loadMenus = (next, to) => {
+  console.log('loadMenus', next, to)
   buildMenus().then(res => {
     const asyncRouter = filterAsyncRouter(res)
     asyncRouter.push({ path: '*', redirect: '/404', hidden: true })
@@ -60,6 +63,7 @@ export const loadMenus = (next, to) => {
       next({ ...to, replace: true })
     })
   })
+  console.log('loadMenus', next)
 }
 
 router.afterEach(() => {
